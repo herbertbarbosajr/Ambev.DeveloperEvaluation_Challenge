@@ -1,6 +1,9 @@
 using MediatR;
 using FluentValidation;
 using Ambev.DeveloperEvaluation.Domain.Repositories;
+using Ambev.DeveloperEvaluation.Application.EventsPublishers;
+using Ambev.DeveloperEvaluation.Domain.Entities.Registers;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace Ambev.DeveloperEvaluation.Application.Sales.DeleteSale;
 
@@ -11,6 +14,7 @@ public class DeleteSaleHandler : IRequestHandler<DeleteSaleCommand, DeleteSaleRe
 {
     private readonly ISaleRepository _saleRepository;
     private readonly IValidator<DeleteSaleCommand> _validator;
+    private readonly IEventPublisher _eventPublisher;
 
     /// <summary>
     /// Initializes a new instance of DeleteSaleHandler
@@ -19,10 +23,12 @@ public class DeleteSaleHandler : IRequestHandler<DeleteSaleCommand, DeleteSaleRe
     /// <param name="validator">The validator for DeleteSaleCommand</param>
     public DeleteSaleHandler(
         ISaleRepository saleRepository,
-        IValidator<DeleteSaleCommand> validator)
+        IValidator<DeleteSaleCommand> validator,
+        IEventPublisher eventPublisher)
     {
         _saleRepository = saleRepository;
         _validator = validator;
+        _eventPublisher = eventPublisher;
     }
 
     /// <summary>
@@ -41,6 +47,8 @@ public class DeleteSaleHandler : IRequestHandler<DeleteSaleCommand, DeleteSaleRe
         var success = await _saleRepository.DeleteAsync(request.Id, cancellationToken);
         if (!success)
             throw new KeyNotFoundException($"Sale with ID {request.Id} not found");
+        var deletedSaleEvent = new CancelSaleRegister { SaleNumber = request.Id, CancelDate = DateTime.UtcNow };
+        await _eventPublisher.PublishAsync(deletedSaleEvent, cancellationToken);
 
         return new DeleteSaleResponse { Success = true };
     }

@@ -6,6 +6,8 @@ using Ambev.DeveloperEvaluation.Domain.Entities;
 using Ambev.DeveloperEvaluation.Domain.BusinessRolesValidations;
 using Microsoft.Extensions.Logging;
 using FluentValidation.Results;
+using Ambev.DeveloperEvaluation.Application.EventsPublishers;
+using Ambev.DeveloperEvaluation.Domain.Entities.Registers;
 
 
 namespace Ambev.DeveloperEvaluation.Application.Sales.CreateSale;
@@ -16,6 +18,7 @@ namespace Ambev.DeveloperEvaluation.Application.Sales.CreateSale;
 public class CreateSaleHandler : IRequestHandler<CreateSaleCommand, CreateSaleResult>
 {
     private readonly ISaleRepository _saleRepository;
+    private readonly IEventPublisher _eventPublisher;
     private readonly IMapper _mapper;
     private readonly DiscountBusinessRuleHandler _discountBusinessRuleHandler;
     private readonly ILogger<CreateSaleHandler> _logger;
@@ -26,13 +29,15 @@ public class CreateSaleHandler : IRequestHandler<CreateSaleCommand, CreateSaleRe
         IMapper mapper,
         DiscountBusinessRuleHandler discountBusinessRule,
         ILogger<CreateSaleHandler> logger,
-        IValidator<CreateSaleCommand> validator)
+        IValidator<CreateSaleCommand> validator,
+        IEventPublisher eventPublisher)
     {
         _saleRepository = saleRepository;
         _mapper = mapper;
         _discountBusinessRuleHandler = discountBusinessRule;
         _logger = logger;
         _validator = validator;
+        _eventPublisher = eventPublisher;
     }
 
     public async Task<CreateSaleResult> Handle(CreateSaleCommand command, CancellationToken cancellationToken)
@@ -48,6 +53,8 @@ public class CreateSaleHandler : IRequestHandler<CreateSaleCommand, CreateSaleRe
         _discountBusinessRuleHandler.Apply(sale);
         var createdSale = await _saleRepository.CreateAsync(sale, cancellationToken);
         var result = _mapper.Map<CreateSaleResult>(createdSale);
+        var createdSaleEvent = new SaleRegister { SaleNumber = command.SaleNumber, Date = DateTime.UtcNow };
+        await _eventPublisher.PublishAsync(createdSaleEvent, cancellationToken);
         LogSuccess(command);
         return result;
     }

@@ -1,6 +1,9 @@
 using MediatR;
 using FluentValidation;
 using Ambev.DeveloperEvaluation.Domain.Repositories;
+using Ambev.DeveloperEvaluation.Application.EventsPublishers;
+using Ambev.DeveloperEvaluation.Domain.Entities.Registers;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace Ambev.DeveloperEvaluation.Application.SaleItems.DeleteSaleItems;
 
@@ -10,6 +13,7 @@ namespace Ambev.DeveloperEvaluation.Application.SaleItems.DeleteSaleItems;
 public class DeleteSalesItemsHandler : IRequestHandler<DeleteSalesItemsCommand, DeleteSalesItemsResponse>
 {
     private readonly ISaleItemRepository _SaleItemsRepository;
+    private readonly IEventPublisher _eventPublisher;
 
     /// <summary>
     /// Initializes a new instance of DeleteSaleItemsHandler
@@ -17,9 +21,11 @@ public class DeleteSalesItemsHandler : IRequestHandler<DeleteSalesItemsCommand, 
     /// <param name="SaleItemsRepository">The SaleItems repository</param>
     /// <param name="validator">The validator for DeleteSaleItemsCommand</param>
     public DeleteSalesItemsHandler(
-        ISaleItemRepository SaleItemsRepository)
+        ISaleItemRepository SaleItemsRepository, 
+        IEventPublisher eventPublisher)
     {
         _SaleItemsRepository = SaleItemsRepository;
+        _eventPublisher = eventPublisher;
     }
 
     /// <summary>
@@ -39,6 +45,9 @@ public class DeleteSalesItemsHandler : IRequestHandler<DeleteSalesItemsCommand, 
         var success = await _SaleItemsRepository.DeleteAsync(request.Id, cancellationToken);
         if (!success)
             throw new KeyNotFoundException($"SaleItems with ID {request.Id} not found");
+
+        var deletedSaleItemsEvent = new CancelItem { SaleId = request.Id, CancelDate = DateTime.UtcNow };
+        await _eventPublisher.PublishAsync(deletedSaleItemsEvent, cancellationToken);
 
         return new DeleteSalesItemsResponse { Success = true };
     }

@@ -3,6 +3,8 @@ using MediatR;
 using FluentValidation;
 using Ambev.DeveloperEvaluation.Domain.Repositories;
 using Ambev.DeveloperEvaluation.Domain.Entities;
+using Ambev.DeveloperEvaluation.Application.EventsPublishers;
+using Ambev.DeveloperEvaluation.Domain.Entities.Registers;
 
 namespace Ambev.DeveloperEvaluation.Application.SaleItems.CreateSalesItems;
 
@@ -13,7 +15,8 @@ public class CreateSalesItemsHandler : IRequestHandler<CreateSalesItemsCommand, 
 {
     private readonly ISaleItemRepository _SaleItemsRepository;
     private readonly IMapper _mapper;
-    
+    private readonly IEventPublisher _eventPublisher;
+
 
     /// <summary>
     /// Initializes a new instance of CreateSaleItemsHandler
@@ -21,12 +24,13 @@ public class CreateSalesItemsHandler : IRequestHandler<CreateSalesItemsCommand, 
     /// <param name="SaleItemsRepository">The SaleItems repository</param>
     /// <param name="mapper">The AutoMapper instance</param>
     /// <param name="validator">The validator for CreateSaleItemsCommand</param>
-    public CreateSalesItemsHandler(ISaleItemRepository SaleItemsRepository, 
-        IMapper mapper)
+    public CreateSalesItemsHandler(ISaleItemRepository SaleItemsRepository,
+        IMapper mapper,
+        IEventPublisher eventPublisher)
     {
         _SaleItemsRepository = SaleItemsRepository;
         _mapper = mapper;
-       
+        _eventPublisher = eventPublisher;
     }
 
     /// <summary>
@@ -47,6 +51,8 @@ public class CreateSalesItemsHandler : IRequestHandler<CreateSalesItemsCommand, 
         
         var createdSaleItems = await _SaleItemsRepository.CreateAsync(SaleItems, cancellationToken);
         var result = _mapper.Map<CreateSalesItemsResult>(createdSaleItems);
+        var createdSaleItemsEvent = new SaleRegister { SaleNumber = command.ProductId, Date = DateTime.UtcNow };
+        await _eventPublisher.PublishAsync(createdSaleItemsEvent, cancellationToken);
         return result;
     }
 }

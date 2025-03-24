@@ -1,4 +1,5 @@
-﻿using Ambev.DeveloperEvaluation.Application.SaleItems.CreateSalesItems;
+﻿using Ambev.DeveloperEvaluation.Application.EventsPublishers;
+using Ambev.DeveloperEvaluation.Application.SaleItems.CreateSalesItems;
 using Ambev.DeveloperEvaluation.Application.SaleItems.DeleteSaleItems;
 using Ambev.DeveloperEvaluation.Application.SaleItems.GetSaleItems;
 using Ambev.DeveloperEvaluation.Application.Sales.CreateSale;
@@ -47,5 +48,8 @@ public class InfrastructureModuleInitializer : IModuleInitializer
         builder.Services.AddTransient<IValidator<CreateUserCommand>, CreateUserCommandValidator>();
         builder.Services.AddTransient<IValidator<DeleteUserCommand>, DeleteUserValidator>();
         builder.Services.AddTransient<IValidator<GetUserCommand>, GetUserValidator>();
+
+        // Registrar o LogEventPublisher
+        builder.Services.AddTransient<IEventPublisher, LogEventPublisher>();
     }
 }
