@@ -1,17 +1,12 @@
 ﻿using Ambev.DeveloperEvaluation.Domain.Entities.Registers;
 using Microsoft.Extensions.Logging;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace Ambev.DeveloperEvaluation.Unit.Application.TestData
 {
    
-    public class LogEventPublisherTests
+public class LogEventPublisherTests
     {
         private readonly Mock<ILogger<LogEventPublisher>> _loggerMock;
         private readonly LogEventPublisher _eventPublisher;
@@ -38,7 +33,7 @@ namespace Ambev.DeveloperEvaluation.Unit.Application.TestData
                     It.IsAny<EventId>(),
                     It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("Evento publicado")),
                     null,
-                    It.IsAny<Func<It.IsAnyType, Exception, string>>()),
+                    It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
                 Times.Once);
         }
     }
