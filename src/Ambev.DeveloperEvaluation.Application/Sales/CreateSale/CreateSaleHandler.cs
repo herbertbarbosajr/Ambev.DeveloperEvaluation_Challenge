@@ -49,7 +49,7 @@ public class CreateSaleHandler : IRequestHandler<CreateSaleCommand, CreateSaleRe
             HandleValidationErrors(command, validationResult);
         }
 
-        var sale = _mapper.Map<Sale>(command);
+        var sale = new Sale { Branch = command.Branch, Customer = command.Customer, Date = command.Date, SaleNumber = command.SaleNumber, TotalAmount = command.TotalAmount, Items = command.Items };
         _discountBusinessRuleHandler.Apply(sale);
         var createdSale = await _saleRepository.CreateAsync(sale, cancellationToken);
         var result = _mapper.Map<CreateSaleResult>(createdSale);

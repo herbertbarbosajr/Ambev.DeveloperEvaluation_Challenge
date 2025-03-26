@@ -14,4 +14,5 @@ public class CreateSaleResult
     /// </summary>
     /// <value>A GUID that uniquely identifies the created Sale in the system.</value>
     public Guid Id { get; set; }
+
 }

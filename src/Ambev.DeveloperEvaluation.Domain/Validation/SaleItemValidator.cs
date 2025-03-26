@@ -10,11 +10,13 @@ public class SaleItemValidator : AbstractValidator<SaleItem>
               
         RuleFor(saleItem => saleItem.UnitPrice)
             .NotNull()
-            .NotEmpty();
+            .NotEmpty()
+            .NotEqual(0);
         
         RuleFor(saleItem => saleItem.TotalAmount)
             .NotNull()
             .NotEmpty()
+            .NotEqual(0)
             .WithMessage("saleItem status cannot be null or empty.");
     }
 }

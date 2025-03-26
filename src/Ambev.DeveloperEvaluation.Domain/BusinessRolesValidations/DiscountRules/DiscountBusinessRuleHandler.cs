@@ -6,9 +6,12 @@ public class DiscountBusinessRuleHandler
 {
     private readonly IEnumerable<IBusinessRules> _discountRules;
 
+    public DiscountBusinessRuleHandler() : this(new List<IBusinessRules>())
+    {
+    }
     public DiscountBusinessRuleHandler(IEnumerable<IBusinessRules> discountRules)
     {
-        _discountRules = discountRules;
+        _discountRules = discountRules ?? throw new ArgumentNullException(nameof(discountRules));
     }
 
     public void Apply(Sale sale)
