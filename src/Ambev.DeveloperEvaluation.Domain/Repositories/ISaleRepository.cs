@@ -36,4 +36,5 @@ public interface ISaleRepository
     /// </summary>
     /// <returns>The Sales founds</returns>
     Task<PaginatedList<Sale>> GetAllSales(int pageNumber, int pageSize);
+    Task<Sale> UpdateAsync(Sale Sale, CancellationToken cancellationToken = default);
 }
