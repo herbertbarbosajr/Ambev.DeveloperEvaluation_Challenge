@@ -34,6 +34,12 @@ public class DiscountBusinessRuleHandler
         item.TotalAmount = item.Quantity * item.UnitPrice * (1 - item.Discount);
     }
 
+    public decimal CalculateTotal(SaleItem item)
+    {
+        item.TotalAmount = item.Quantity * item.UnitPrice * (1 - item.Discount);
+        return item.TotalAmount;
+    }
+
     private decimal CalculateSaleTotalAmount(Sale sale)
     {
         return sale.Items.Sum(i => i.TotalAmount);

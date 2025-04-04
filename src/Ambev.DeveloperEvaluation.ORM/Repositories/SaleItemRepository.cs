@@ -75,4 +75,23 @@ public class SaleItemRepository : ISaleItemRepository
             .ToListAsync();
         return new PaginatedList<SaleItem>(items, totalItems, pageNumber, pageSize);
     }
+
+    /// <summary>
+    /// Updates an existing Sale in the database
+    /// </summary>
+    /// <param name="saleItem">The saleItem to update</param>
+    /// <param name="cancellationToken">Cancellation token</param>
+    /// <returns>The updated Sale</returns>
+    public async Task<SaleItem> UpdateAsync(SaleItem saleItem, CancellationToken cancellationToken = default)
+    {
+        var existingSale = await GetByIdAsync(saleItem.Id, cancellationToken);
+        if (existingSale == null)
+        {
+            throw new KeyNotFoundException($"SaleItem with ID {saleItem.Id} not found.");
+        }
+
+        _context.Entry(existingSale).CurrentValues.SetValues(saleItem);
+        await _context.SaveChangesAsync(cancellationToken);
+        return existingSale;
+    }
 }

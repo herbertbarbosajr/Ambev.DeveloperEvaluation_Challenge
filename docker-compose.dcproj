@@ -15,9 +15,26 @@
     </None>
     <None Include="docker-compose.yml" />
     <None Include=".dockerignore" />
+    <None Include="src\Ambev.DeveloperEvaluation.Application\SalesItems\UpdateSalesItems\UpdateSalesItemsCommand.cs" />
+    <None Include="src\Ambev.DeveloperEvaluation.Application\SalesItems\UpdateSalesItems\UpdateSalesItemsCommandHandler.cs" />
+    <None Include="src\Ambev.DeveloperEvaluation.Application\SalesItems\UpdateSalesItems\UpdateSalesItemsCommandValidator.cs" />
+    <None Include="src\Ambev.DeveloperEvaluation.Application\SalesItems\UpdateSalesItems\UpdateSalesItemsResult.cs" />
+    <None Include="src\Ambev.DeveloperEvaluation.Application\Sales\UpdateSale\UpdateSaleCommand.cs" />
+    <None Include="src\Ambev.DeveloperEvaluation.Application\Sales\UpdateSale\UpdateSaleCommandHandler.cs" />
+    <None Include="src\Ambev.DeveloperEvaluation.Application\Sales\UpdateSale\UpdateSaleCommandValidator.cs" />
+    <None Include="src\Ambev.DeveloperEvaluation.Application\Sales\UpdateSale\UpdateSaleResult.cs" />
+    <None Include="src\Ambev.DeveloperEvaluation.WebApi\Features\SalesItems\UpdateSalesItems\UpdateSalesItemsProfile.cs" />
+    <None Include="src\Ambev.DeveloperEvaluation.WebApi\Features\SalesItems\UpdateSalesItems\UpdateSalesItemsRequest.cs" />
+    <None Include="src\Ambev.DeveloperEvaluation.WebApi\Features\SalesItems\UpdateSalesItems\UpdateSalesItemsResponse.cs" />
+    <None Include="src\Ambev.DeveloperEvaluation.WebApi\Features\Sales\UpdateSale\UpdateSaleProfile.cs" />
+    <None Include="src\Ambev.DeveloperEvaluation.WebApi\Features\Sales\UpdateSale\UpdateSaleRequest.cs" />
+    <None Include="src\Ambev.DeveloperEvaluation.WebApi\Features\Sales\UpdateSale\UpdateSaleResponse.cs" />
+    <None Include="tests\Ambev.DeveloperEvaluation.Integration\DiscountBusinessRuleHandlerFixture.cs" />
+    <None Include="tests\Ambev.DeveloperEvaluation.Integration\IProductService.cs" />
     <None Include="tests\Ambev.DeveloperEvaluation.Unit\Application\CreateSaleHandlerTests.cs" />
     <None Include="tests\Ambev.DeveloperEvaluation.Unit\Application\CreateSalesItemsHandlerTests.cs" />
     <None Include="tests\Ambev.DeveloperEvaluation.Unit\Domain\Validation\SaleItemValidatorTests.cs" />
     <None Include="tests\Ambev.DeveloperEvaluation.Unit\Domain\Validation\SaleValidatorTests.cs" />
+    <None Include="tests\Ambev.DeveloperEvaluation.Unit\WebApi\SalesControllerTests.cs" />
   </ItemGroup>
 </Project>

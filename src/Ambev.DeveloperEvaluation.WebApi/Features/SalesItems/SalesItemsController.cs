@@ -10,6 +10,8 @@ using Ambev.DeveloperEvaluation.WebApi.Features.SalesItems.DeleteSalesItems;
 using Ambev.DeveloperEvaluation.Application.SaleItems.DeleteSaleItems;
 using Ambev.DeveloperEvaluation.SaleItems.GetSaleItems;
 using Ambev.DeveloperEvaluation.Domain.Extensions;
+using Ambev.DeveloperEvaluation.Application.SaleItems.UpdateSalesItems;
+using Ambev.DeveloperEvaluation.WebApi.Features.SalesItems.UpdateSalesItems;
 
 namespace Ambev.DeveloperEvaluation.WebApi.Features.SalesItems;
 
@@ -147,6 +149,38 @@ public class SalesItemsController : BaseController
         {
             Success = true,
             Message = "SalesItems deleted successfully"
+        });
+    }
+
+    /// <summary>
+    /// Updates an existing SalesItems
+    /// </summary>
+    /// <param name="request">The SalesItems update request</param>
+    /// <param name="cancellationToken">Cancellation token</param>
+    /// <returns>The updated SalesItems details</returns>
+    [HttpPut("{id}")]
+    [ProducesResponseType(typeof(ApiResponseWithData<UpdateSalesItemsResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> UpdateSalesItems([FromRoute] Guid id, [FromBody] UpdateSalesItemsRequest request, CancellationToken cancellationToken)
+    {
+        if (id != request.Id)
+            return BadRequest("The ID in the route does not match the ID in the request body.");
+
+        var validator = new UpdateSalesItemsRequestValidator();
+        var validationResult = await validator.ValidateAsync(request, cancellationToken);
+
+        if (!validationResult.IsValid)
+            return BadRequest(validationResult.Errors);
+
+        var command = _mapper.Map<UpdateSalesItemsCommand>(request);
+        var response = await _mediator.Send(command, cancellationToken);
+
+        return Ok(new ApiResponseWithData<UpdateSalesItemsResponse>
+        {
+            Success = true,
+            Message = "SalesItems updated successfully",
+            Data = _mapper.Map<UpdateSalesItemsResponse>(response)
         });
     }
 }

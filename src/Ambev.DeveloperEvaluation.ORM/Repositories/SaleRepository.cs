@@ -74,4 +74,23 @@ public class SaleRepository : ISaleRepository
         await _context.SaveChangesAsync(cancellationToken);
         return true;
     }
+
+    /// <summary>
+    /// Updates an existing Sale in the database
+    /// </summary>
+    /// <param name="Sale">The Sale to update</param>
+    /// <param name="cancellationToken">Cancellation token</param>
+    /// <returns>The updated Sale</returns>
+    public async Task<Sale> UpdateAsync(Sale Sale, CancellationToken cancellationToken = default)
+    {
+        var existingSale = await GetByIdAsync(Sale.Id, cancellationToken);
+        if (existingSale == null)
+        {
+            throw new KeyNotFoundException($"Sale with ID {Sale.Id} not found.");
+        }
+
+        _context.Entry(existingSale).CurrentValues.SetValues(Sale);
+        await _context.SaveChangesAsync(cancellationToken);
+        return existingSale;
+    }
 }

@@ -13,6 +13,7 @@ namespace Ambev.DeveloperEvaluation.Domain.Entities;
 /// </summary>
 public class SaleItem : BaseEntity, ISaleItem
 {
+
     /// <summary>
     /// Gets the Sale's id.
     /// Must not be null or empty and should contain both first and last names.
